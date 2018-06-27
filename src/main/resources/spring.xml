@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
 
     <import resource="loggers.xml"/>
     
     <!-- -BEANS- -->
 
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:client.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesMode">
+            <util:constant
+                    static-field="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        </property>
+    </bean>
+
     <bean id="client"
           class="ua.epam.spring.beans.Client">
 
-        <constructor-arg value="1"/>
-        <constructor-arg value="John Smith"/>
+        <constructor-arg index="0" value="${id}"/>
+        <constructor-arg value="${name}"/>
 
         <property name="greeting"
-                  value="Hello there!"/>
+                  value="${greeting}"/>
 
     </bean>
 
@@ -37,19 +52,19 @@
 
     <!-- -CORE- -->
 
+    <util:map id="loggerMap">
+        <entry key="INFO"
+               value-ref="eventLogger"/>
+        <entry key="ERROR"
+               value-ref="combinedEventLogger"/>
+    </util:map>
+
     <bean id="app"
           class="ua.epam.spring.core.App">
 
         <constructor-arg ref="event"/>
         <constructor-arg ref="eventLogger"/>
-        <constructor-arg>
-            <map>
-                <entry key="INFO"
-                       value-ref="eventLogger"/>
-                <entry key="ERROR"
-                       value-ref="combinedEventLogger"/>
-            </map>
-        </constructor-arg>
+        <constructor-arg ref="loggerMap"/>
 
     </bean>
 
