@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="loggers.xml"/>
+    
+    <!-- -BEANS- -->
+
+    <bean id="client"
+          class="ua.epam.spring.beans.Client">
+
+        <constructor-arg value="1"/>
+        <constructor-arg value="John Smith"/>
+
+        <property name="greeting"
+                  value="Hello there!"/>
+
+    </bean>
+
+    <bean id="event"
+          class="ua.epam.spring.beans.Event"
+          scope="prototype">
+
+        <constructor-arg>
+            <bean class="java.util.Date"/>
+        </constructor-arg>
+        <constructor-arg>
+            <bean id="dateFormat"
+                  class="java.text.DateFormat"
+                  factory-method="getDateTimeInstance"/>
+        </constructor-arg>
+
+    </bean>
+
+    <!-- -CORE- -->
+
+    <bean id="app"
+          class="ua.epam.spring.core.App">
+
+        <constructor-arg ref="event"/>
+        <constructor-arg ref="eventLogger"/>
+        <constructor-arg>
+            <map>
+                <entry key="INFO"
+                       value-ref="eventLogger"/>
+                <entry key="ERROR"
+                       value-ref="combinedEventLogger"/>
+            </map>
+        </constructor-arg>
+
+    </bean>
+
+</beans>
+

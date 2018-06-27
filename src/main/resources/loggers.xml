@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- -LOGGERS- -->
+
+    <bean id="eventLogger"
+          class="ua.epam.spring.loggers.ConsoleEventLogger"/>
+
+    <bean id="fileEventLogger"
+          class="ua.epam.spring.loggers.FileEventLogger"
+          init-method="init">
+
+        <constructor-arg value="Logs.txt"/>
+
+    </bean>
+
+    <bean id="cacheFileEventLogger"
+          class="ua.epam.spring.loggers.CacheFileEventLogger"
+          destroy-method="destroy"
+          parent="fileEventLogger">
+
+        <constructor-arg value="4"/>
+
+    </bean>
+
+    <bean id="combinedEventLogger"
+          class="ua.epam.spring.loggers.CombinedEventLogger">
+
+        <constructor-arg>
+            <list>
+                <ref bean="eventLogger"/>
+                <ref bean="fileEventLogger"/>
+            </list>
+        </constructor-arg>
+
+    </bean>
+
+</beans>
